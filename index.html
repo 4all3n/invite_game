@@ -27,41 +27,41 @@
         srcset=""
         class="absolute w-36 left-1/2 top-[45rem] -z-10"
       />
+      <img src="./res/game/g4.png" alt="" srcset="" class="absolute w-56 left-2 bottom-5 z-1">
+      <img src="./res/game/g5.png" alt="" srcset="" class="absolute w-[20rem] bottom-10 left-[20rem] -z-10">
       <div
         class="nav w-24 bg-[#ffffff34] flex flex-col p-6 gap-10 h-[90vh] rounded-3xl"
       >
         <img src="./res/X.png" alt="" srcset="" />
         <img src="./res/game-controller.png" alt="" srcset="" />
         <img src="./res/web-design.png" alt="" srcset="" />
+
       </div>
       <div class="w-[100%] mx-4 flex flex-col">
         <div
           class="flex w-[100%] h-[20vh] justify-between mx-10 mt-[-30px] items-center"
         >
           <h1 class="text-5xl font-bold text-white head">
-            Welcome to <span class="text-[#07B6B0]">Xactitude.</span>
+            Welcome to <span class="text-[#07b6b0be]">Xactitude.</span>
           </h1>
           <img src="./res/kjc.png" alt="" srcset="" class="w-[30%] h-20" />
         </div>
         <div
-          class="border-dotted border-2 border-[#07B6B0] w-[80%] h-[60vh] mx-auto mt-16 rounded-3xl"
+          class=" w-[80%] h-[60vh] mx-auto mt-16 rounded-3xl"
         >
-          <canvas id="gameCanvas"></canvas>
+          <canvas id="gameCanvas" class="w-[100%] h-full rounded-3xl "></canvas>
           <div id="crack"></div>
           <div id="overlay">Nigga you better come to Xactitude</div>
           <div id="video-container">
             <video
               id="promo-video"
               src="invite.mp4"
-              autoplay
-              playsinline
-              controls
             ></video>
           </div>
         </div>
         <div class="flex justify-end mt-10">
           <h1 class="text-5xl font-bold text-white score relative right-20">
-            SCORE:<span class="text-[#07B6B0]">100</span>
+            SCORE:<span class="text-[#07B6B0]" id="score">00</span>
           </h1>
         </div>
       </div>

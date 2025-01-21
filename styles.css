@@ -23,17 +23,16 @@ body {
   font-style: normal;
 }
  
-
-canvas {
+canvas{
   display: block;
 }
+
 #crack {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: url("crack.png") center/cover no-repeat;
+  width: 50%;
+  height: 50%;
   opacity: 0;
   pointer-events: none;
   animation: crack-animation 1s forwards;
@@ -55,7 +54,7 @@ canvas {
   height: 100%;
   background: black;
   opacity: 0;
-  color: white;
+  color: rgba(255, 255, 255, 0.273);
   display: flex;
   align-items: center;
   justify-content: center;
