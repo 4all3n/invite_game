@@ -1,174 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dino Game</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #f7f7f7;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: sans-serif;
-    }
-
-    #gameCanvas {
-      background: #f1f1f1;
-      border: 1px solid #000;
-      margin-top: 30px;
-    }
-
-    #score {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 24px;
-    }
-  </style>
-</head>
-<body>
-  <div id="score">Score: 0</div>
-  <canvas id="gameCanvas" width="1000" height="300"></canvas>
-
-  <script>
-    // Get the canvas context
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreElement = document.getElementById('score');
-
-    // Game settings
-    const gameSettings = {
-      gravity: 0.8,
-      jumpStrength: 15,
-      initialObstacleSpeed: 5,
-      playerWidth: 100,
-      playerHeight: 100,
-      obstacleWidth: 30,
-      obstacleHeight: 50,
-      groundY: canvas.height - 80
-    };
-
-    // Game state
-    let gameState = {
-      isJumping: false,
-      jumpVelocity: 0,
-      playerX: 50,
-      playerY: gameSettings.groundY,
-      obstacleX: canvas.width,
-      obstacleSpeed: gameSettings.initialObstacleSpeed,
-      score: 0,
-      gameLoop: null
-    };
-
-    // Load images
-    const playerImage = new Image();
-    playerImage.src = 'dino.png';
-
-    const obstacleImage = new Image();
-    obstacleImage.src = 'cactus.png';
-
-    // Event listeners
-    document.addEventListener('keydown', function(e) {
-      if (e.code === 'Space' && !gameState.isJumping) {
-        gameState.isJumping = true;
-        gameState.jumpVelocity = -gameSettings.jumpStrength;
-      }
-    });
-
-    function updateScore() {
-      gameState.score++;
-      scoreElement.textContent = `Score: ${gameState.score}`;
-    }
-
-    function updateGame() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Handle jumping
-      if (gameState.isJumping) {
-        gameState.playerY += gameState.jumpVelocity;
-        gameState.jumpVelocity += gameSettings.gravity;
-
-        if (gameState.playerY >= gameSettings.groundY) {
-          gameState.playerY = gameSettings.groundY;
-          gameState.isJumping = false;
-          gameState.jumpVelocity = 0;
-        }
-      }
-
-      // Draw player
-      ctx.drawImage(
-        playerImage,
-        gameState.playerX,
-        gameState.playerY,
-        gameSettings.playerWidth,
-        gameSettings.playerHeight
-      );
-
-      // Update and draw obstacle
-      gameState.obstacleX -= gameState.obstacleSpeed;
-
-      if (gameState.obstacleX + gameSettings.obstacleWidth <= 0) {
-        gameState.obstacleX = canvas.width;
-        updateScore();
-      }
-
-      // Draw obstacle
-      ctx.drawImage(
-        obstacleImage,
-        gameState.obstacleX,
-        canvas.height - gameSettings.obstacleHeight,
-        gameSettings.obstacleWidth,
-        gameSettings.obstacleHeight
-      );
-
-      // Draw ground line
-      ctx.beginPath();
-      ctx.moveTo(0, canvas.height - 20);
-      ctx.lineTo(canvas.width, canvas.height - 20);
-      ctx.strokeStyle = '#000';
-      ctx.stroke();
-
-      // Check collision
-      if (
-        gameState.playerX + gameSettings.playerWidth > gameState.obstacleX &&
-        gameState.playerX < gameState.obstacleX + gameSettings.obstacleWidth &&
-        gameState.playerY + gameSettings.playerHeight > canvas.height - gameSettings.obstacleHeight
-      ) {
-        endGame();
-        return;
-      }
-
-      gameState.gameLoop = requestAnimationFrame(updateGame);
-    }
-
-    function endGame() {
-      cancelAnimationFrame(gameState.gameLoop);
-      alert(`Game Over! Final Score: ${gameState.score}\nClick OK to restart.`);
-      resetGame();
-    }
-
-    function resetGame() {
-      gameState = {
-        isJumping: false,
-        jumpVelocity: 0,
-        playerX: 50,
-        playerY: gameSettings.groundY,
-        obstacleX: canvas.width,
-        obstacleSpeed: gameSettings.initialObstacleSpeed,
-        score: 0,
-        gameLoop: null
-      };
-      
-      scoreElement.textContent = 'Score: 0';
-      gameState.gameLoop = requestAnimationFrame(updateGame);
-    }
-
-    // Start the game
-    gameState.gameLoop = requestAnimationFrame(updateGame);
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dino Game</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="flex w-[100%] h-[100vh] p-10">
+      <img
+        src="./res/game/g1.png"
+        alt=""
+        srcset=""
+        class="absolute w-36 left-0 top-[20rem] -z-10"
+      />
+      <img
+        src="./res/game/g2.png"
+        alt=""
+        srcset=""
+        class="absolute w-52 right-0 top-[20rem] -z-10"
+      />
+      <img
+        src="./res/game/g3.png"
+        alt=""
+        srcset=""
+        class="absolute w-36 left-1/2 top-[45rem] -z-10"
+      />
+      <div
+        class="nav w-24 bg-[#ffffff34] flex flex-col p-6 gap-10 h-[90vh] rounded-3xl"
+      >
+        <img src="./res/X.png" alt="" srcset="" />
+        <img src="./res/game-controller.png" alt="" srcset="" />
+        <img src="./res/web-design.png" alt="" srcset="" />
+      </div>
+      <div class="w-[100%] mx-4 flex flex-col">
+        <div
+          class="flex w-[100%] h-[20vh] justify-between mx-10 mt-[-30px] items-center"
+        >
+          <h1 class="text-5xl font-bold text-white head">
+            Welcome to <span class="text-[#07B6B0]">Xactitude.</span>
+          </h1>
+          <img src="./res/kjc.png" alt="" srcset="" class="w-[30%] h-20" />
+        </div>
+        <div
+          class="border-dotted border-2 border-[#07B6B0] w-[80%] h-[60vh] mx-auto mt-16 rounded-3xl"
+        >
+          <canvas id="gameCanvas"></canvas>
+          <div id="crack"></div>
+          <div id="overlay">Nigga you better come to Xactitude</div>
+          <div id="video-container">
+            <video
+              id="promo-video"
+              src="invite.mp4"
+              autoplay
+              playsinline
+              controls
+            ></video>
+          </div>
+        </div>
+        <div class="flex justify-end mt-10">
+          <h1 class="text-5xl font-bold text-white score relative right-20">
+            SCORE:<span class="text-[#07B6B0]">100</span>
+          </h1>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
 </html>

@@ -1,65 +1,158 @@
-const dino = document.getElementById('dino');
-const obstacle = document.getElementById('obstacle');
-const gameOver = document.getElementById('gameOver');
-const teaser = document.getElementById('teaser');
+const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
 
-let isJumping = false;
-let gameActive = true;
+      const crack = document.getElementById("crack");
+      const overlay = document.getElementById("overlay");
+      const videoContainer = document.getElementById("video-container");
 
-// Dino jump logic
-document.addEventListener('keydown', () => {
-  if (!isJumping) jump();
-});
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-function jump() {
-  isJumping = true;
-  let upInterval = setInterval(() => {
-    if (parseInt(getComputedStyle(dino).bottom) >= 150) {
-      clearInterval(upInterval);
-      let downInterval = setInterval(() => {
-        if (parseInt(getComputedStyle(dino).bottom) <= 0) {
-          clearInterval(downInterval);
-          isJumping = false;
-        } else {
-          dino.style.bottom = parseInt(getComputedStyle(dino).bottom) - 5 + 'px';
+      const dino = new Image();
+      const cactus = new Image();
+
+      dino.src = "dino.png";
+      cactus.src = "obstacle.png";
+
+      const dinoWidth = 140;
+      const dinoHeight = 110;
+      let dinoX = 80;
+      let dinoY = canvas.height - dinoHeight;
+
+      const cactusWidth = 80;
+      const cactusHeight = 80;
+      let cactusX = canvas.width;
+      let cactusY = canvas.height - cactusHeight - 20;
+
+      let gravity = 0.9;
+      let isJumping = false;
+      let jumpSpeed = 26;
+      let velocity = 0;
+
+      let score = 0;
+      let gameOver = false;
+
+      function drawBackground() {
+        ctx.fillStyle = "#e0f7fa";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function drawDino() {
+        ctx.drawImage(dino, dinoX, dinoY, dinoWidth, dinoHeight);
+      }
+
+      function drawCactus() {
+        ctx.drawImage(cactus, cactusX, cactusY, cactusWidth, cactusHeight);
+      }
+
+      function drawScore() {
+        ctx.fillStyle = "#333";
+        ctx.font = "20px Arial";
+        ctx.fillText(`Score: ${score}`, 20, 40);
+      }
+
+      function jump() {
+        if (!isJumping) {
+          isJumping = true;
+          velocity = -jumpSpeed;
         }
-      }, 20);
-    } else {
-      dino.style.bottom = parseInt(getComputedStyle(dino).bottom) + 5 + 'px';
-    }
-  }, 20);
-}
+      }
 
-// Obstacle movement
-function moveObstacle() {
-  obstacle.style.right = parseInt(getComputedStyle(obstacle).right) + 5 + 'px';
-  if (parseInt(getComputedStyle(obstacle).right) > 600) {
-    obstacle.style.right = '-20px';
-  }
+      function resetGame() {
+        dinoY = canvas.height - dinoHeight - 20;
+        cactusX = canvas.width;
+        score = 0;
+        gameOver = false;
+      }
 
-  // Collision detection
-  if (
-    parseInt(getComputedStyle(obstacle).right) > 50 &&
-    parseInt(getComputedStyle(obstacle).right) < 100 &&
-    parseInt(getComputedStyle(dino).bottom) <= 50
-  ) {
-    endGame();
-  }
-}
+      function showCrackEffect() {
+        crack.style.animation = "crack-animation 1s forwards";
+        setTimeout(() => {
+          showOverlay();
+        }, 1000);
+      }
 
-function endGame() {
-  gameActive = false;
-  obstacle.style.animation = 'none';
-  gameOver.style.display = 'block';
+      function showOverlay() {
+        overlay.style.opacity = "1";
+        setTimeout(() => {
+          overlay.style.opacity = "0";
+          showVideo();
+        }, 3000);
+      }
 
-  // Transition to teaser after a delay
-  setTimeout(() => {
-    gameOver.style.display = 'none';
-    teaser.style.display = 'block';
-  }, 2000);
-}
+      function showVideo() {
+        videoContainer.style.display = "block";
+        const video = document.getElementById("promo-video");
 
-// Game loop
-setInterval(() => {
-  if (gameActive) moveObstacle();
-}, 20);
+        // Attempt to play the video
+        video
+          .play()
+          .then(() => {
+            // Request fullscreen once the video starts playing
+            if (video.requestFullscreen) {
+              video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+              // Safari support
+              video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+              // IE/Edge support
+              video.msRequestFullscreen();
+            }
+          })
+          .catch((error) => {
+            console.error("Autoplay failed:", error);
+          });
+      }
+
+      function gameLoop() {
+        if (gameOver) {
+          showCrackEffect();
+          return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawBackground();
+        drawDino();
+        drawCactus();
+        drawScore();
+
+        if (isJumping) {
+          velocity += gravity;
+          dinoY += velocity;
+          if (dinoY >= canvas.height - dinoHeight - 20) {
+            dinoY = canvas.height - dinoHeight - 20;
+            isJumping = false;
+          }
+        }
+
+        cactusX -= 6;
+
+        if (cactusX + cactusWidth < 0) {
+          cactusX = canvas.width;
+          score++;
+        }
+
+        if (
+          dinoX < cactusX + cactusWidth &&
+          dinoX + dinoWidth > cactusX &&
+          dinoY < cactusY + cactusHeight &&
+          dinoY + dinoHeight > cactusY
+        ) {
+          gameOver = true;
+        }
+
+        requestAnimationFrame(gameLoop);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.code === "Space") {
+          if (gameOver) {
+            resetGame();
+          } else {
+            jump();
+          }
+        }
+      });
+
+      gameLoop();
