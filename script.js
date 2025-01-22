@@ -246,5 +246,13 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+document.addEventListener("click", () => {
+  if (gameOver) {
+    resetGame();
+  } else {
+    jump();
+  }
+});
+
 // Start the game loop
 gameLoop();
