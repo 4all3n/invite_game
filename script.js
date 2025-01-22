@@ -57,10 +57,10 @@ let cactusX = canvas.width;
 let cactusY = canvas.height - cactusHeight - 20;
 
 // Game mechanics
-let gravity = 0.56;
+let gravity = 2.2;
 let isJumping = false;
-let jumpSpeed = 26;
-let velocity = 0;
+let jumpSpeed = 48;
+let velocity = 40;
 let score = 0;
 let gameOver = false;
 let obstacleSpeed = 0;
@@ -274,7 +274,7 @@ document.addEventListener("click", () => {
   if (!gameStarted) {
     document.getElementById("idle-text").style.display = "none";
     gameStarted = true;
-    obstacleSpeed = 10;
+    obstacleSpeed = 20;
   }
 });
 
