@@ -6,6 +6,8 @@ const crack = document.getElementById("crack");
 const overlay = document.getElementById("overlay");
 const videoContainer = document.getElementById("video-container");
 const points = document.getElementById("score");
+const video = document.getElementById("promo-video");
+const endImage = document.getElementById("end-image");
 
 let gameStarted = false;
 
@@ -238,9 +240,11 @@ function gameLoop() {
 }
 
 // Show invitation after the video ends
-document.getElementById("promo-video").addEventListener("ended", () => {
-  document.getElementById("end-image").style.display = "block";
-  document.getElementById("promo-video").style.display = "none";
+video.addEventListener("ended", () => {
+  video.style.opacity = "0";
+  setTimeout(() => {
+    endImage.style.opacity = "1";
+  }, 500);
 });
 
 // Event listener for jump and game reset
