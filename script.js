@@ -272,8 +272,9 @@ document.addEventListener("click", () => {
 
 document.addEventListener("click", () => {
   if (!gameStarted) {
+    document.getElementById("idle-text").style.display = "none";
     gameStarted = true;
-    obstacleSpeed = 80;
+    obstacleSpeed = 10;
   }
 });
 
