@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
+@font-face {
+  font-family: 'pixel';
+  src: url('./font/Percy\ Pixel.ttf');
+}
+
+
+
 body {
     font-family: Arial, sans-serif;
     background: #000000;
@@ -10,14 +17,14 @@ body {
   }
 
 .head{
-  font-family: "Pixelify Sans", serif;
+  font-family: "Pixel", serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
 }
 
 .score{
-  font-family: "Pixelify Sans", serif;
+  font-family: "Pixel", serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
