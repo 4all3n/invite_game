@@ -237,6 +237,12 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+// Show invitation after the video ends
+document.getElementById("promo-video").addEventListener("ended", () => {
+  document.getElementById("end-image").style.display = "block";
+  document.getElementById("promo-video").style.display = "none";
+});
+
 // Event listener for jump and game reset
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
