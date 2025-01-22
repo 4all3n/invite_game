@@ -34,6 +34,7 @@ body {
   font-style: normal;
 }
 
+
 .score{
   font-family: "Pixel", serif;
   font-optical-sizing: auto;
@@ -41,6 +42,13 @@ body {
   font-style: normal;
 }
  
+
+.start{
+  font-family: "Pixel", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
 
 .over{
   font-family: "Pixel", serif;
@@ -57,6 +65,8 @@ body {
   font-style: normal;
   font-size: 2rem;
 }
+
+
 
 canvas{
   display: block;
