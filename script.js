@@ -33,6 +33,39 @@ cactusSprites[2].image.src = "cactus3.png";
 cactusSprites[3].image.src = "cactus4.png";
 cactusSprites[4].image.src = "cactus5.png";
 
+// Background sprites setup
+const backgroundSprites = [
+  { image: new Image(), x: 0, y: 50, width: 400, height: 300, speed: 1 },
+  { image: new Image(), x: 1900, y: 80, width: 350, height: 280, speed: 1.5 },
+  { image: new Image(), x: 250, y: 10, width: 400, height: 300, speed: 1 },
+  { image: new Image(), x: 900, y: 1, width: 350, height: 280, speed: 1.5 },
+  { image: new Image(), x: 1750, y: 150, width: 400, height: 300, speed: 1 },
+  { image: new Image(), x: 660, y: 130, width: 400, height: 300, speed: 1 },
+  { image: new Image(), x: 1200, y: 20, width: 350, height: 280, speed: 1.5 },
+  { image: new Image(), x: 1400, y: 60, width: 400, height: 300, speed: 1 },
+  { image: new Image(), x: 400, y: 80, width: 350, height: 280, speed: 1.5 },
+  { image: new Image(), x: 750, y: 50, width: 400, height: 300, speed: 1 },
+  { image: new Image(), x: 0, y: 440, width: 5000, height: 600, speed: 1 },
+  { image: new Image(), x: 4800, y: 440, width: 5000, height: 600, speed: 1 },
+];
+backgroundSprites[0].image.src = "cloud1.png";
+backgroundSprites[1].image.src = "cloud2.png";
+backgroundSprites[2].image.src = "cloud3.png";
+backgroundSprites[3].image.src = "cloud4.png";
+backgroundSprites[4].image.src = "cloud5.png";
+backgroundSprites[5].image.src = "cloud1.png";
+backgroundSprites[6].image.src = "cloud2.png";
+backgroundSprites[7].image.src = "cloud3.png";
+backgroundSprites[8].image.src = "cloud4.png";
+backgroundSprites[9].image.src = "cloud5.png";
+backgroundSprites[10].image.src = "grass.png";
+backgroundSprites[11].image.src = "grass.png";
+
+
+// Load the background image
+const backgroundImage = new Image();
+backgroundImage.src = "background.jpg";
+
 // Current cactus sprite state
 let currentCactus = cactusSprites[0];
 const obstacleState = {
@@ -65,10 +98,9 @@ let score = 0;
 let gameOver = false;
 let obstacleSpeed = 0;
 
-// Draw background
+// Draw background function
 function drawBackground() {
-  ctx.fillStyle = "#07b6b0be";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 }
 
 // Draw dino
@@ -117,6 +149,23 @@ function resetCactus() {
 
   // Gradually increase obstacle speed
   obstacleSpeed += 0.2;
+}
+
+function drawBackgroundSprites() {
+  backgroundSprites.forEach((sprite) => {
+    sprite.x -= sprite.speed; // Move left at the sprite's speed
+    if (sprite.x + sprite.width < 0) {
+      // Reset position when off-screen
+      sprite.x = canvas.width + Math.random() * 100;
+    }
+    ctx.drawImage(
+      sprite.image,
+      sprite.x,
+      sprite.y,
+      sprite.width,
+      sprite.height
+    );
+  });
 }
 
 // Handle jump
@@ -209,6 +258,7 @@ function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawBackground();
+  drawBackgroundSprites();
   drawDino();
   drawCactus();
 
@@ -275,6 +325,16 @@ document.addEventListener("click", () => {
     document.getElementById("idle-text").style.display = "none";
     gameStarted = true;
     obstacleSpeed = 10;
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space") {
+    if (!gameStarted) {
+      document.getElementById("idle-text").style.display = "none";
+      gameStarted = true;
+      obstacleSpeed = 10;
+    }
   }
 });
 
