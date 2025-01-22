@@ -17,7 +17,7 @@ canvas.height = window.innerHeight;
 
 // Dino sprite setup
 const dino = new Image();
-dino.src = "naruto-run.png";
+dino.src = "luffy.png";
 
 // Cactus sprite setup
 const cactusSprites = [
@@ -45,8 +45,8 @@ const dinoState = {
   lastFrameChangeTime: { value: 0 },
   currentFrame: { value: 0 },
 };
-const dinoWidth = 160;
-const dinoHeight = 200;
+const dinoWidth = 260;
+const dinoHeight = 300;
 let dinoX = 80;
 let dinoY = canvas.height - dinoHeight;
 
@@ -57,7 +57,7 @@ let cactusX = canvas.width;
 let cactusY = canvas.height - cactusHeight - 20;
 
 // Game mechanics
-let gravity = 0.6;
+let gravity = 0.56;
 let isJumping = false;
 let jumpSpeed = 26;
 let velocity = 0;
@@ -76,7 +76,7 @@ function drawDino() {
   drawSprite({
     ctx,
     sprite: dino,
-    totalFrames: 10, // Dino sprite has 10 frames
+    totalFrames: 24, // Dino sprite has 10 frames
     positionX: dinoX,
     positionY: dinoY,
     displayWidth: dinoWidth,
