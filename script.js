@@ -21,13 +21,17 @@ dino.src = "naruto-run.png";
 
 // Cactus sprite setup
 const cactusSprites = [
-  { image: new Image(), frames: 16 },
-  { image: new Image(), frames: 449 },
+  { image: new Image(), frames: 24 },
+  { image: new Image(), frames: 24 },
+  { image: new Image(), frames: 24 },
+  { image: new Image(), frames: 24 },
   { image: new Image(), frames: 24 },
 ];
 cactusSprites[0].image.src = "cactus1.png";
 cactusSprites[1].image.src = "cactus2.png";
 cactusSprites[2].image.src = "cactus3.png";
+cactusSprites[3].image.src = "cactus4.png";
+cactusSprites[4].image.src = "cactus5.png";
 
 // Current cactus sprite state
 let currentCactus = cactusSprites[0];
