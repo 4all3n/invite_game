@@ -55,7 +55,7 @@ let jumpSpeed = 26;
 let velocity = 0;
 let score = 0;
 let gameOver = false;
-let obstacleSpeed = 8;
+let obstacleSpeed = 10;
 
 // Draw background
 function drawBackground() {
