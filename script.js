@@ -273,7 +273,7 @@ document.addEventListener("click", () => {
 document.addEventListener("click", () => {
   if (!gameStarted) {
     gameStarted = true;
-    obstacleSpeed = 8;
+    obstacleSpeed = 80;
   }
 });
 
