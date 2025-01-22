@@ -37,8 +37,8 @@ const dinoState = {
   lastFrameChangeTime: { value: 0 },
   currentFrame: { value: 0 },
 };
-const dinoWidth = 190;
-const dinoHeight = 180;
+const dinoWidth = 160;
+const dinoHeight = 200;
 let dinoX = 80;
 let dinoY = canvas.height - dinoHeight;
 
