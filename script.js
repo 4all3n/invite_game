@@ -7,6 +7,8 @@ const overlay = document.getElementById("overlay");
 const videoContainer = document.getElementById("video-container");
 const points = document.getElementById("score");
 
+let gameStarted = false;
+
 // Set canvas dimensions
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -55,7 +57,7 @@ let jumpSpeed = 26;
 let velocity = 0;
 let score = 0;
 let gameOver = false;
-let obstacleSpeed = 10;
+let obstacleSpeed = 0;
 
 // Draw background
 function drawBackground() {
@@ -246,5 +248,19 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Start the game loop
+document.addEventListener("click", () => {
+  if (gameOver) {
+    resetGame();
+  } else {
+    jump();
+  }
+});
+
+document.addEventListener("click", () => {
+  if (!gameStarted) {
+    gameStarted = true;
+    obstacleSpeed = 8;
+  }
+});
+
 gameLoop();
