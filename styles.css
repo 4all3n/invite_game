@@ -5,6 +5,15 @@
   src: url('./font/Percy\ Pixel.ttf');
 }
 
+@font-face {
+  font-family: 'inversionz';
+  src: url('./font/Inversionz.ttf');
+}
+
+@font-face {
+  font-family: 'c';
+  src: url('./font/c.ttf');
+}
 
 
 body {
@@ -15,6 +24,8 @@ body {
     background-size: cover;
     margin: 1rem;
   }
+
+
 
 .head{
   font-family: "Pixel", serif;
@@ -30,6 +41,23 @@ body {
   font-style: normal;
 }
  
+
+.over{
+  font-family: "Pixel", serif;
+  font-optical-sizing:auto;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 3rem;
+}
+
+.som{
+  font-family: "c", serif;
+  font-optical-sizing:auto;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 2rem;
+}
+
 canvas{
   display: block;
 }
@@ -61,7 +89,7 @@ canvas{
   height: 100%;
   background: black;
   opacity: 0;
-  color: rgba(255, 255, 255, 0.273);
+  color: rgb(255, 255, 255);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,3 +111,4 @@ canvas{
   width: 100%;
   height: 100%;
 }
+
