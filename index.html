@@ -7,90 +7,94 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <div class="flex w-[100%] p-10 overflow-hidden">
+  <body class="bg-black text-white min-h-screen flex justify-center items-center overflow-x-hidden">
+    <div class="flex flex-col lg:flex-row w-full max-w-7xl min-h-[90vh] p-4 md:p-8 lg:p-10 gap-6 lg:gap-10 items-center lg:items-stretch overflow-hidden relative z-10">
+      <!-- ambient background game graphics -->
       <img
         src="./res/game/g1.png"
         alt=""
-        srcset=""
-        class="absolute w-36 left-0 top-[20rem] -z-10"
+        class="hidden md:block absolute w-32 lg:w-40 left-[-2rem] top-[15rem] -z-10 opacity-70 pointer-events-none"
       />
       <img
         src="./res/game/g2.png"
         alt=""
-        srcset=""
-        class="absolute w-52 right-0 top-[20rem] -z-10"
+        class="hidden md:block absolute w-44 lg:w-56 right-[-2rem] top-[15rem] -z-10 opacity-70 pointer-events-none"
       />
       <img
         src="./res/game/g3.png"
         alt=""
-        srcset=""
-        class="absolute w-36 left-1/2 top-[45rem] -z-10"
+        class="hidden lg:block absolute w-32 left-1/2 top-[35rem] -z-10 opacity-40 pointer-events-none"
       />
       <img
         src="./res/game/g4.png"
         alt=""
-        srcset=""
-        class="absolute w-56 left-2 bottom-5 z-1"
+        class="hidden lg:block absolute w-48 left-[-1rem] bottom-[2rem] -z-10 opacity-50 pointer-events-none"
       />
       <img
         src="./res/game/g5.png"
         alt=""
-        srcset=""
-        class="absolute w-[20rem] bottom-10 left-[20rem] -z-10"
+        class="hidden lg:block absolute w-64 bottom-[2rem] left-[15rem] -z-10 opacity-40 pointer-events-none"
       />
+
       <div
-        class="nav w-24 bg-[#ffffff34] flex flex-col p-6 gap-10 h-[90vh] rounded-3xl"
+        class="nav w-full lg:w-24 bg-[#ffffff10] backdrop-blur-md border border-white/10 flex flex-row lg:flex-col p-4 lg:p-6 gap-6 lg:gap-10 h-auto lg:h-[90vh] rounded-2xl lg:rounded-3xl justify-around lg:justify-start items-center"
       >
-        <img src="./res/X.png" alt="" srcset="" />
-        <img src="./res/game-controller.png" alt="" srcset="" />
-        <img src="./res/web-design.png" alt="" srcset="" />
+        <img src="./res/X.png" alt="X Logo" class="w-10 h-10 object-contain hover:scale-110 transition-transform cursor-pointer" />
+        <img src="./res/game-controller.png" alt="Game Icon" class="w-8 h-8 object-contain hover:scale-110 transition-transform cursor-pointer" />
+        <img src="./res/web-design.png" alt="Web Design Icon" class="w-8 h-8 object-contain hover:scale-110 transition-transform cursor-pointer" />
       </div>
-      <div class="w-[100%] mx-4 flex flex-col">
+
+      <div class="w-full flex flex-col gap-6">
         <div
-          class="flex w-[100%] h-[20vh] justify-between mx-10 mt-[-30px] items-center"
+          class="flex flex-col md:flex-row w-full justify-between items-center gap-4 px-4 md:px-10 mt-2 lg:mt-[-30px]"
         >
-          <h1 class="text-5xl font-bold text-white head">
+          <h1 class="text-3xl md:text-5xl font-bold text-white head text-center md:text-left">
             Welcome to <span class="text-[#07b6b0be]">Xactitude.</span>
           </h1>
-          <img src="./res/kjc.png" alt="" srcset="" class="w-[30%] h-20" />
+          <img src="./res/kjc.png" alt="KJC Logo" class="w-auto h-12 md:h-16 object-contain" />
         </div>
-        <div class="w-[80%] h-[60vh] mx-auto mt-11 rounded-3xl">
-          <p id="idle-text" class="start text-[4rem] text-white absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 ">Click to Start!</p>
-          <canvas id="gameCanvas" class="w-[100%] h-full rounded-3xl"></canvas>
+
+        <div class="relative w-full max-w-5xl aspect-[2/1] mx-auto rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-black/40 backdrop-blur-sm">
+          <p id="idle-text" class="start text-3xl md:text-5xl lg:text-6xl text-white absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full px-4 select-none cursor-pointer drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] z-10">
+            <span class="hidden md:inline">Click or Press Space to Start!</span>
+            <span class="md:hidden">Tap to Start!</span>
+          </p>
+          <canvas id="gameCanvas" class="w-full h-full rounded-3xl block"></canvas>
           <div id="crack"></div>
           <div
             id="overlay"
-            class="text-white flex flex-col justify-center items-center"
+            class="text-white flex flex-col justify-center items-center gap-4"
           >
             <p class="over">Oops! Game Over...</p>
-            <br />
             <p class="som">but something exciting is on its way!</p>
           </div>
-          
         </div>
-        <div class="flex justify-end mt-10">
-          <h1 class="text-5xl font-bold text-white score relative right-20">
-            SCORE:<span class="text-[#07B6B0]" id="score">00</span>
+
+        <div class="flex justify-center md:justify-end px-4 md:px-10">
+          <h1 class="text-3xl md:text-5xl font-bold text-white score">
+            SCORE: <span class="text-[#07B6B0]" id="score">00</span>
+            <span class="text-white/40 mx-2 md:mx-4">|</span>
+            BEST: <span class="text-[#07B6B0]" id="best-score">00</span>
           </h1>
         </div>
       </div>
-      <div id="video-container" class="relative">
-        <video
-          id="promo-video"
-          src="invite.mp4"
-          class="absolute w-full h-full"
-          style="opacity: 1; transition: opacity 1s"
-        ></video>
-        <img
-          id="end-image"
-          src="xact-invite.jpg"
-          alt="Game End Image"
-          class="mx-auto w-[40%]"
-          style="opacity: 0; transition: opacity 1s"
-        />
-      </div>
     </div>
+
+    <div id="invite-container" class="fixed inset-0 z-50 hidden justify-center items-center p-4">
+      <button id="replay-btn" class="absolute top-6 right-6 z-20 flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-[#07B6B0] text-white font-semibold rounded-full border border-white/20 hover:border-[#07B6B0] shadow-lg transition-all duration-300 hover:shadow-[#07B6B0]/50 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md">
+        <svg class="w-5 h-5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M9 11l3-3m-3 3l3 3"></path>
+        </svg>
+        <span>Play Again</span>
+      </button>
+      <img
+        id="end-image"
+        src="xact-invite.jpg"
+        alt="Invitation Card"
+        class="w-[95%] md:w-[75%] lg:w-[48%] xl:w-[40%] max-h-[85vh] object-contain shadow-[0_0_50px_rgba(7,182,176,0.3)] rounded-2xl border border-white/10 transition-transform duration-700 scale-95"
+      />
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>

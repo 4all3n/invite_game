@@ -4,16 +4,21 @@ const ctx = canvas.getContext("2d");
 
 const crack = document.getElementById("crack");
 const overlay = document.getElementById("overlay");
-const videoContainer = document.getElementById("video-container");
+const inviteContainer = document.getElementById("invite-container");
 const points = document.getElementById("score");
-const video = document.getElementById("promo-video");
 const endImage = document.getElementById("end-image");
+const bestScoreEl = document.getElementById("best-score");
 
+// Game states
 let gameStarted = false;
+let gameOver = false;
+let gameLoopId = null;
 
-// Set canvas dimensions
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// Logical resolution dimensions for scaling
+const LOGICAL_WIDTH = 1600;
+const LOGICAL_HEIGHT = 800;
+let scaleX = 1;
+let scaleY = 1;
 
 // Dino sprite setup
 const dino = new Image();
@@ -45,7 +50,7 @@ const backgroundSprites = [
   { image: new Image(), x: 1400, y: 60, width: 400, height: 300, speed: 1 },
   { image: new Image(), x: 400, y: 80, width: 350, height: 280, speed: 1.5 },
   { image: new Image(), x: 750, y: 50, width: 400, height: 300, speed: 1 },
-  { image: new Image(), x: 0, y: 440, width: 5000, height: 600, speed: 1 },
+  { image: new Image(), x: 0, y: 290, width: 5000, height: 600, speed: 1 },
   { image: new Image(), x: 4800, y: 440, width: 5000, height: 600, speed: 1 },
 ];
 backgroundSprites[0].image.src = "cloud1.png";
@@ -60,7 +65,6 @@ backgroundSprites[8].image.src = "cloud4.png";
 backgroundSprites[9].image.src = "cloud5.png";
 backgroundSprites[10].image.src = "grass.png";
 backgroundSprites[11].image.src = "grass.png";
-
 
 // Load the background image
 const backgroundImage = new Image();
@@ -81,13 +85,13 @@ const dinoState = {
 const dinoWidth = 260;
 const dinoHeight = 300;
 let dinoX = 80;
-let dinoY = canvas.height - dinoHeight;
+let dinoY = LOGICAL_HEIGHT - dinoHeight - 20;
 
 // Obstacle properties
 let cactusWidth = 180;
 let cactusHeight = 180;
-let cactusX = canvas.width;
-let cactusY = canvas.height - cactusHeight - 20;
+let cactusX = LOGICAL_WIDTH;
+let cactusY = LOGICAL_HEIGHT - cactusHeight - 20;
 
 // Game mechanics
 let gravity = 2.2;
@@ -95,12 +99,46 @@ let isJumping = false;
 let jumpSpeed = 48;
 let velocity = 40;
 let score = 0;
-let gameOver = false;
 let obstacleSpeed = 0;
+
+// High Score System
+let bestScore = parseInt(localStorage.getItem("xact_best_score") || "0", 10);
+if (bestScoreEl) {
+  bestScoreEl.innerText = bestScore === 0 ? "00" : bestScore;
+}
+
+function updateScore(newScore) {
+  score = newScore;
+  points.innerText = score === 0 ? "00" : score;
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem("xact_best_score", bestScore);
+    if (bestScoreEl) {
+      bestScoreEl.innerText = bestScore === 0 ? "00" : bestScore;
+    }
+  }
+}
+
+// Set canvas dimensions dynamically based on CSS container size
+function resizeCanvas() {
+  const container = canvas.parentElement;
+  if (container) {
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    
+    // Scale coordinate system to match logical resolution
+    scaleX = canvas.width / LOGICAL_WIDTH;
+    scaleY = canvas.height / LOGICAL_HEIGHT;
+  }
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas(); // Initialize sizing
 
 // Draw background function
 function drawBackground() {
-  ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(backgroundImage, 0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT);
 }
 
 // Draw dino
@@ -108,7 +146,7 @@ function drawDino() {
   drawSprite({
     ctx,
     sprite: dino,
-    totalFrames: 24, // Dino sprite has 10 frames
+    totalFrames: 24, // Dino sprite has 24 frames
     positionX: dinoX,
     positionY: dinoY,
     displayWidth: dinoWidth,
@@ -130,33 +168,40 @@ function drawCactus() {
     displayWidth: cactusWidth,
     displayHeight: cactusHeight,
     lastTime: obstacleState.lastFrameChangeTime,
-    frameInterval: 1000 / 60, // 8 FPS
+    frameInterval: 1000 / 60,
     currentFrameRef: obstacleState.currentFrame,
   });
 }
 
 // Reset cactus position and properties
 function resetCactus() {
-  cactusX = canvas.width;
+  cactusX = LOGICAL_WIDTH;
 
   // Randomize cactus size and position
   cactusWidth = Math.random() * 150 + 50;
   cactusHeight = Math.random() * 140 + 60;
-  cactusY = canvas.height - cactusHeight - Math.random() * 20 - 20;
+  cactusY = LOGICAL_HEIGHT - cactusHeight - Math.random() * 20 - 20;
 
   // Randomly select a new cactus sprite
   currentCactus = cactusSprites[Math.floor(Math.random() * cactusSprites.length)];
-
-  // Gradually increase obstacle speed
-  obstacleSpeed += 0.2;
 }
 
+// Draw background sprites (clouds and grass)
 function drawBackgroundSprites() {
-  backgroundSprites.forEach((sprite) => {
+  backgroundSprites.forEach((sprite, index) => {
     sprite.x -= sprite.speed; // Move left at the sprite's speed
+    
+    const isGrass = index === 10 || index === 11;
+    
     if (sprite.x + sprite.width < 0) {
-      // Reset position when off-screen
-      sprite.x = canvas.width + Math.random() * 100;
+      if (isGrass) {
+        // Seamless reset for scrolling grass floor
+        const otherGrass = backgroundSprites[index === 10 ? 11 : 10];
+        sprite.x = otherGrass.x + otherGrass.width - 5;
+      } else {
+        // Reset position when off-screen
+        sprite.x = LOGICAL_WIDTH + Math.random() * 100;
+      }
     }
     ctx.drawImage(
       sprite.image,
@@ -178,18 +223,43 @@ function jump() {
 
 // Reset the game after game over
 function resetGame() {
-  dinoY = canvas.height - dinoHeight - 20;
-  cactusX = canvas.width;
+  // Hide invitation container with transition fade out
+  inviteContainer.classList.remove("active");
+  setTimeout(() => {
+    inviteContainer.style.display = "none";
+  }, 800);
+
+  // Remove animation / active classes
+  crack.classList.remove("active");
+  overlay.classList.remove("active");
+
+  // Reset coordinates & states
+  gameStarted = false;
+  gameOver = false;
+  updateScore(0);
+  obstacleSpeed = 0;
+
+  // Show start text
+  const idleText = document.getElementById("idle-text");
+  if (idleText) {
+    idleText.style.display = "block";
+  }
+
+  dinoY = LOGICAL_HEIGHT - dinoHeight - 20;
+  cactusX = LOGICAL_WIDTH;
   cactusWidth = 80;
   cactusHeight = 80;
-  obstacleSpeed = 10;
-  score = 0;
-  gameOver = false;
+
+  // Restart loop securely
+  if (gameLoopId) {
+    cancelAnimationFrame(gameLoopId);
+  }
+  gameLoop();
 }
 
 // Show crack effect
 function showCrackEffect() {
-  crack.style.animation = "crack-animation 1s forwards";
+  crack.classList.add("active");
   setTimeout(() => {
     showOverlay();
   }, 1000);
@@ -197,18 +267,19 @@ function showCrackEffect() {
 
 // Show overlay
 function showOverlay() {
-  overlay.style.opacity = "1";
+  overlay.classList.add("active");
   setTimeout(() => {
-    overlay.style.opacity = "0";
-    showVideo();
+    overlay.classList.remove("active");
+    showInvite();
   }, 3000);
 }
 
-// Show video
-function showVideo() {
-  videoContainer.style.display = "block";
-  const video = document.getElementById("promo-video");
-  video.play().catch((error) => console.error("Autoplay failed:", error));
+// Show fullscreen invitation
+function showInvite() {
+  inviteContainer.style.display = "flex";
+  setTimeout(() => {
+    inviteContainer.classList.add("active");
+  }, 20);
 }
 
 // Draw sprite helper function
@@ -252,90 +323,116 @@ function drawSprite({
 function gameLoop() {
   if (gameOver) {
     showCrackEffect();
+    gameLoopId = null;
     return;
   }
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Apply responsive scaling transformations
+  ctx.save();
+  ctx.scale(scaleX, scaleY);
 
   drawBackground();
   drawBackgroundSprites();
   drawDino();
   drawCactus();
 
+  ctx.restore(); // Restore drawing context
+
+  // Game physics and updates in logical coordinate space
   if (isJumping) {
     velocity += gravity;
     dinoY += velocity;
-    if (dinoY >= canvas.height - dinoHeight - 20) {
-      dinoY = canvas.height - dinoHeight - 20;
+    if (dinoY >= LOGICAL_HEIGHT - dinoHeight - 20) {
+      dinoY = LOGICAL_HEIGHT - dinoHeight - 20;
       isJumping = false;
     }
   }
 
-  cactusX -= obstacleSpeed;
+  if (gameStarted) {
+    // Gradually increase speed over time (approximately 0.09 speed units per second)
+    obstacleSpeed += 0.0015;
+    cactusX -= obstacleSpeed;
+  }
 
   // Reset cactus if it moves off-screen
   if (cactusX + cactusWidth < 0) {
     resetCactus();
-    score += 100;
-    points.innerHTML = score;
+    updateScore(score + 100);
   }
 
-  // Collision detection
+  // Refined Collision Detection (Using padded hit boxes to match visible sprites)
+  const dinoHitX = dinoX + 70;
+  const dinoHitWidth = dinoWidth - 140; // Luffy is centered, actual body width is ~120px
+  const dinoHitY = dinoY + 40;
+  const dinoHitHeight = dinoHeight - 50;
+
+  const cactusHitX = cactusX + cactusWidth * 0.25;
+  const cactusHitWidth = cactusWidth * 0.5; // Cactus is vertical, actual width is narrow
+  const cactusHitY = cactusY + cactusHeight * 0.1;
+  const cactusHitHeight = cactusHeight * 0.9;
+
   if (
-    dinoX < cactusX + cactusWidth &&
-    dinoX + dinoWidth > cactusX &&
-    dinoY < cactusY + cactusHeight &&
-    dinoY + dinoHeight > cactusY
+    dinoHitX < cactusHitX + cactusHitWidth &&
+    dinoHitX + dinoHitWidth > cactusHitX &&
+    dinoHitY < cactusHitY + cactusHitHeight &&
+    dinoHitY + dinoHitHeight > cactusHitY
   ) {
     gameOver = true;
   }
 
-  requestAnimationFrame(gameLoop);
+  gameLoopId = requestAnimationFrame(gameLoop);
 }
 
-// Show invitation after the video ends
-video.addEventListener("ended", () => {
-  video.style.opacity = "0";
-  setTimeout(() => {
-    endImage.style.opacity = "1";
-  }, 500);
-});
-
-// Event listener for jump and game reset
-document.addEventListener("keydown", (e) => {
-  if (e.code === "Space") {
-    if (gameOver) {
-      resetGame();
-    } else {
-      jump();
-    }
-  }
-});
-
-document.addEventListener("click", () => {
+// Handle user interaction
+function handleInteraction(e) {
   if (gameOver) {
-    resetGame();
-  } else {
-    jump();
+    return;
   }
-});
 
-document.addEventListener("click", () => {
   if (!gameStarted) {
-    document.getElementById("idle-text").style.display = "none";
+    const idleText = document.getElementById("idle-text");
+    if (idleText) {
+      idleText.style.display = "none";
+    }
     gameStarted = true;
-    obstacleSpeed = 20;
+    obstacleSpeed = 10;
+    return;
   }
+
+  jump();
+}
+
+// Event listeners for jump and game start (Unified pointerdown for click/touch)
+document.addEventListener("pointerdown", (e) => {
+  // If clicking on the replay button, let its own click listener handle it
+  if (e.target.closest("#replay-btn")) {
+    return;
+  }
+
+  // Prevent default behavior to avoid double-tap zooming on mobile
+  if (e.target === canvas || e.target.closest("#gameCanvas")) {
+    e.preventDefault();
+  }
+
+  handleInteraction(e);
 });
 
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
-    if (!gameStarted) {
-      document.getElementById("idle-text").style.display = "none";
-      gameStarted = true;
-      obstacleSpeed = 10;
-    }
+    e.preventDefault(); // Prevent page scroll
+    handleInteraction(e);
   }
 });
 
+// Replay button listener
+const replayBtn = document.getElementById("replay-btn");
+if (replayBtn) {
+  replayBtn.addEventListener("click", () => {
+    resetGame();
+  });
+}
+
+// Start the game loop
 gameLoop();
