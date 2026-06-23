@@ -163,7 +163,5 @@ canvas{
   transform: scale(1);
 }
 
-#replay-btn:hover svg {
-  transform: rotate(360deg);
-}
+
 
